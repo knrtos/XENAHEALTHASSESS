@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Health Information Table</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            background: transparent;
+            color: #054607;
+            font-family: "Comfortaa", sans-serif;
+        }
+
+        /* Table styles */
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 10px;
+            font-size: 20px;
+            overflow: hidden;
+            background: transparent;
+        }
+
+        th, td {
+            border: 5px solid #498202;
+            padding: 20px;
+            text-align: left;
+            color: #054607;
+            background: rgba(254, 255, 234);
+            border-radius: 5px; /* Rounded edges */
+        }
+
+        th {
+            background-color: #82A436;
+            color: white;
+            font-weight: bold;
+        }
+
+        td:hover {
+            background-color: #447804;
+            color: white;
+            cursor: pointer;
+        }
+
+        .bg-warning {
+            background-color: #498202;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="tbl_user_data">
+        <table>
+            <thead>
+                <tr>
+                    <th>CLASSIFICATION</th>
+                    <th>INFORMATION</th>
+                </tr>
+            </thead>
+            <tbody id="senna-data-body">
+                <!-- Rows will be populated here -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // Default data with updated parameter names and all caps inputs
+        const defaultSennaData = [
+            { classification: "GRADE LEVEL", information: "KINDER" },
+            { classification: "DATE OF EXAMINATION", information: "MARCH 10, 2025" },
+            { classification: "HEIGHT (IN CM)", information: "116 CM" },
+            { classification: "WEIGHT (IN KG)", information: "25 KG" },
+            { classification: "NUTRITIONAL STATUS (NS) (BMI/Wt-for-Age)", information: "NORMAL WEIGHT" },
+            { classification: "NUTRITIONAL STATUS (NS) (HEIGHT-for-Age)", information: "NORMAL HEIGHT" },
+            { classification: "VISION SCREENING USING APPROPRIATE CHART", information: "PASSED" },
+            { classification: "AUDITORY SCREENING (TUNING FORK)", information: "PASSED" },
+            { classification: "SKIN", information: "NORMAL" },
+            { classification: "SCALP", information: "NORMAL" },
+            { classification: "EYES", information: "NORMAL" },
+            { classification: "EARS", information: "NORMAL" },
+            { classification: "NOSE", information: "NORMAL" },
+            { classification: "MOUTH", information: "NORMAL" },
+            { classification: "NECK", information: "NORMAL" },
+            { classification: "THROAT", information: "NORMAL" },
+            { classification: "LUNGS", information: "NORMAL" },
+            { classification: "HEART", information: "NORMAL" },
+            { classification: "ABDOMEN", information: "ABDOMINAL PAIN" },
+            { classification: "OTHERS, SPECIFY", information: "-" }
+        ];
+
+        // Load data from local storage or initialize with default values
+        const storedSennaData = JSON.parse(localStorage.getItem('sennaHealthInfoData')) || defaultSennaData;
+
+        // Function to render the table
+        function renderSennaTable(data) {
+            const tbody = document.getElementById('senna-data-body');
+            tbody.innerHTML = ''; // Clear existing rows
+            data.forEach((item, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="editable" contenteditable="true" data-index="${index}">${item.classification}</td>
+                    <td class="editable" contenteditable="true" data-index="${index}">${item.information}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Save data to local storage
+        function saveSennaData() {
+            const dataToSave = [];
+            const rows = document.querySelectorAll('#senna-data-body tr');
+            rows.forEach(row => {
+                const classification = row.cells[0].innerText;
+                const information = row.cells[1].innerText;
+                dataToSave.push({ classification, information });
+            });
+            localStorage.setItem('sennaHealthInfoData', JSON.stringify(dataToSave));
+        }
+
+        // Event listener for editable cells
+        document.addEventListener('focusout', function(event) {
+            if (event.target.classList.contains('editable')) {
+                saveSennaData(); // Save data on focus out
+            }
+        });
+
+        // Initial render
+        renderSennaTable(storedSennaData);
+    </script>
+</body>
+</html>
